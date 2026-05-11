@@ -38,7 +38,7 @@ public class MedicineController {
 
     @PostMapping("/add")
     public String add(@Valid @ModelAttribute("medicineDTO") MedicineDTO dto,
-                      BindingResult bindingResult) {
+                      BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) return "admin/medicines/form";
 
         try {
@@ -46,6 +46,7 @@ public class MedicineController {
             return "redirect:/admin/medicines";
         } catch (ServiceException e) {
             bindingResult.rejectValue(e.getField(), "", e.getMessage());
+            model.addAttribute("activePage", "medicines");
             return "admin/medicines/form";
         }
     }

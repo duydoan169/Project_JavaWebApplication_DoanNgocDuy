@@ -28,7 +28,6 @@ public class PrescriptionService {
     public void dispense(Long prescriptionId) {
         Prescription prescription = prescriptionRepository.findById(prescriptionId).orElse(null);
 
-        // Check stock for every medicine line before touching anything
         for (PrescriptionDetail detail : prescription.getDetails()) {
             Medicine medicine = detail.getMedicine();
             if (medicine.getStockQuantity() < detail.getQuantity()) {
@@ -38,7 +37,6 @@ public class PrescriptionService {
             }
         }
 
-        // All stock is sufficient — decrement each medicine
         for (PrescriptionDetail detail : prescription.getDetails()) {
             Medicine medicine = detail.getMedicine();
             medicine.setStockQuantity(medicine.getStockQuantity() - detail.getQuantity());

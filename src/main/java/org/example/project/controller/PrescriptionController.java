@@ -21,7 +21,7 @@ public class PrescriptionController {
     @GetMapping
     public String pendingPrescriptions(Model model) {
         model.addAttribute("prescriptions", prescriptionService.getPendingPrescriptions());
-        model.addAttribute("activePage", "medicines");
+        model.addAttribute("activePage", "prescriptions");
         return "admin/prescriptions/prescription-list";
     }
 

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Đăng Ký — SmartHealth</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Modern Font Stack -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <style>
+
+    :root {
+      --bg-body: #f8fafc;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px 0;
+    }
+
+    .auth-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+      0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+      padding: 20px 36px;
+    }
+
+    .brand-wrapper {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .brand-text {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .form-title {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .form-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    /* --- INPUTS --- */
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .form-control {
+      height: 48px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      font-size: 0.95rem;
+      padding: 0 16px;
+      transition: all 0.2s ease;
+      background-color: #ffffff;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+      outline: none;
+    }
+
+    /* --- BUTTONS --- */
+
+    .btn-register {
+      background-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      width: 100%;
+      transition: all 0.2s;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    .btn-register:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    }
+
+    .footer-text {
+      margin-top: 32px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .footer-link {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none !important;
+    }
+
+    .footer-link:hover {
+      color: var(--accent-hover);
+    }
+
+    .error-message {
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: #ef4444;
+      margin-top: 6px;
+      display: block;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="auth-card">
+
+  <div class="brand-wrapper">
+    <span class="brand-text">SmartHealth</span>
+  </div>
+
+  <h1 class="form-title">Tạo Tài Khoản</h1>
+
+  <p class="form-subtitle">
+    Tham gia hệ thống quản lý trung tâm ngay hôm nay.
+  </p>
+
+  <form th:action="@{/register}"
+        th:object="${registerRequest}"
+        method="post">
+
+    <div class="form-group mb-4">
+
+      <label>Họ Và Tên</label>
+
+      <input type="text"
+             class="form-control"
+             th:field="*{fullName}"
+             placeholder="VD: Nguyễn Văn A"
+             th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'"/>
+
+      <span th:if="${#fields.hasErrors('fullName')}"
+            class="error-message"
+            th:text="${#fields.errors('fullName')[0]}">
+      </span>
+
+    </div>
+
+    <div class="form-group mb-4">
+
+      <label>Tên Đăng Nhập</label>
+
+      <input type="text"
+             class="form-control"
+             th:field="*{username}"
+             placeholder="nguyenvana"
+             th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"/>
+
+      <span th:if="${#fields.hasErrors('username')}"
+            class="error-message"
+            th:text="${#fields.errors('username')[0]}">
+      </span>
+
+    </div>
+
+    <div class="form-group mb-4">
+
+      <label>Địa Chỉ Email</label>
+
+      <input type="text"
+             class="form-control"
+             th:field="*{email}"
+             placeholder="you@example.com"
+             th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"/>
+
+      <span th:if="${#fields.hasErrors('email')}"
+            class="error-message"
+            th:text="${#fields.errors('email')[0]}">
+      </span>
+
+    </div>
+
+    <div class="form-group mb-4">
+
+      <label>Mật Khẩu</label>
+
+      <input type="password"
+             class="form-control"
+             th:field="*{password}"
+             placeholder="••••••••"
+             th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
+
+      <span th:if="${#fields.hasErrors('password')}"
+            class="error-message"
+            th:text="${#fields.errors('password')[0]}">
+      </span>
+
+    </div>
+
+    <button type="submit" class="btn-register">
+      Tạo Tài Khoản
+    </button>
+
+  </form>
+
+  <div class="footer-text">
+
+    Đã có tài khoản?
+
+    <a th:href="@{/login}" class="footer-link">
+      Đăng nhập
+    </a>
+
+  </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

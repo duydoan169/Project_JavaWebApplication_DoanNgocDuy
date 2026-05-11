@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Danh Sách Chờ Khám — SmartHealth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5; --primary-dark: #4338ca; --primary-light: #eef2ff;
+            --text: #1e1b4b; --muted: #6b7280; --border: #e5e7eb;
+            --bg: #f5f5f9; --white: #ffffff; --success: #059669; --warn: #d97706;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        a { text-decoration: none; color: inherit; }
+
+        .topbar {
+            background: var(--white); border-bottom: 1px solid var(--border);
+            padding: 0 2rem; height: 60px; display: flex; align-items: center;
+            justify-content: space-between; position: sticky; top: 0; z-index: 100;
+        }
+        .topbar-brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.15rem; color: var(--primary); }
+        .topbar-right { display: flex; align-items: center; gap: .5rem; }
+        .btn-ghost {
+            background: none; border: none; padding: .45rem .85rem; border-radius: 8px;
+            font-family: inherit; font-size: .88rem; font-weight: 500; color: var(--muted);
+            cursor: pointer; display: flex; align-items: center; gap: .4rem; transition: background .15s, color .15s;
+        }
+        .btn-ghost:hover { background: var(--bg); color: var(--text); }
+        .btn-logout {
+            background: none; border: 1.5px solid var(--border); padding: .4rem .85rem;
+            border-radius: 8px; font-family: inherit; font-size: .88rem; font-weight: 500;
+            color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: .4rem;
+            transition: border-color .15s, color .15s, background .15s;
+        }
+        .btn-logout:hover { border-color: #dc2626; color: #dc2626; background: #fef2f2; }
+
+        .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; }
+        .page-header h2 { font-size: 1.35rem; font-weight: 700; }
+        .page-header p { font-size: .85rem; color: var(--muted); margin-top: .2rem; }
+
+        .alert-success {
+            background: #ecfdf5; border: 1.5px solid #6ee7b7; border-radius: 10px;
+            padding: .85rem 1.1rem; color: #065f46; font-size: .88rem; font-weight: 500;
+            display: flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem;
+        }
+
+        .appointment-card {
+            background: var(--white); border: 1.5px solid var(--border); border-radius: 12px;
+            padding: 1.25rem 1.5rem; margin-bottom: .85rem;
+            display: flex; align-items: center; gap: 1.25rem;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .appointment-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(79,70,229,.08); }
+
+        .appt-date-block {
+            text-align: center; min-width: 54px;
+            background: var(--primary-light); border-radius: 10px; padding: .6rem .5rem;
+        }
+        .appt-date-block .day { font-size: 1.4rem; font-weight: 700; color: var(--primary); line-height: 1; }
+        .appt-date-block .month { font-size: .7rem; color: var(--primary); font-weight: 600; text-transform: uppercase; }
+
+        .appt-info { flex: 1; }
+        .appt-info h4 { font-size: .95rem; font-weight: 600; margin-bottom: .2rem; }
+        .appt-info p { font-size: .82rem; color: var(--muted); }
+        .appt-info .time { font-weight: 600; color: var(--text); font-size: .85rem; margin-top: .2rem; }
+
+        .btn-examine {
+            background: var(--primary); color: #fff; border: none; border-radius: 8px;
+            padding: .5rem 1.1rem; font-family: inherit; font-size: .85rem; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; gap: .4rem; transition: background .15s;
+            white-space: nowrap;
+        }
+        .btn-examine:hover { background: var(--primary-dark); }
+
+        .empty { text-align: center; color: var(--muted); padding: 3rem 0; font-size: .9rem; }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <div class="topbar-brand"><i class="fa-solid fa-heart-pulse"></i> SmartHealth</div>
+    <div class="topbar-right">
+        <a href="/doctor/home"><button class="btn-ghost"><i class="fa-solid fa-house"></i> Trang chủ</button></a>
+        <a href="/doctor/profile"><button class="btn-ghost"><i class="fa-regular fa-user"></i> Hồ sơ</button></a>
+        <a href="/logout"><button class="btn-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</button></a>
+    </div>
+</div>
+
+<div class="main">
+    <div class="page-header">
+        <div>
+            <h2>Danh sách bệnh nhân chờ khám</h2>
+            <p>Hôm nay — <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy')}"></span></p>
+        </div>
+    </div>
+
+    <div class="alert-success" th:if="${param.success}">
+        <i class="fa-solid fa-circle-check"></i>
+        Lưu hồ sơ khám thành công.
+    </div>
+
+    <div th:if="${!appointments.isEmpty()}">
+        <div class="appointment-card" th:each="appt : ${appointments}">
+            <div class="appt-date-block">
+                <div class="day" th:text="${#temporals.format(appt.startTime, 'HH')}"></div>
+                <div class="month" th:text="${#temporals.format(appt.startTime, 'mm')}"></div>
+            </div>
+            <div class="appt-info">
+                <h4 th:text="${appt.patient.fullName}">Tên bệnh nhân</h4>
+                <p th:text="${appt.patient.phone} ?: 'Chưa có số điện thoại'"></p>
+                <p class="time">
+                    <i class="fa-regular fa-clock"></i>
+                    <span th:text="${#temporals.format(appt.startTime, 'HH:mm')}"></span>
+                    — <span th:text="${#temporals.format(appt.endTime, 'HH:mm')}"></span>
+                </p>
+                <p th:if="${appt.reason != null and !appt.reason.isBlank()}"
+                   th:text="'Lý do: ' + ${appt.reason}"
+                   style="font-style: italic; margin-top:.2rem"></p>
+            </div>
+            <a th:href="@{/doctor/examination/{id}(id=${appt.id})}">
+                <button class="btn-examine">
+                    <i class="fa-solid fa-stethoscope"></i> Khám
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <div class="empty" th:if="${appointments.isEmpty()}">
+        <i class="fa-solid fa-calendar-check" style="font-size:2rem; margin-bottom:.75rem; display:block; color: var(--primary)"></i>
+        Không có bệnh nhân nào chờ khám hôm nay.
+    </div>
+</div>
+</body>
+</html>

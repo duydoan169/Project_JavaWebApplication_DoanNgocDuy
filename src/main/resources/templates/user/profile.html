@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Hồ Sơ Cá Nhân — SmartHealth</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Modern Font Stack -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #4f46e5;
+            --success-bg: #f0fdf4;
+            --success-text: #166534;
+            --accent-hover: #4338ca;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header-nav {
+            background-color: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 0;
+            margin-bottom: 60px;
+        }
+
+        .brand-logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .profile-container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+
+        .card-header-inner {
+            padding: 40px 40px 0 40px;
+        }
+
+        .card-body-inner {
+            padding: 20px 40px 40px;
+        }
+
+        .page-heading {
+            font-weight: 700;
+            font-size: 1.85rem;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .page-subheading {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 40px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-control {
+            height: 48px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            padding: 0 16px;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+            outline: none;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        .btn-save {
+            background-color: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 32px;
+            border-radius: 10px;
+            border: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 32px;
+            border-radius: 10px;
+            border: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            background-color: #6c757d;
+            transform: translateY(-1px);
+            color: #fff;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(178, 174, 255, 0.2);
+        }
+
+        .alert-custom {
+            background-color: var(--success-bg);
+            border: 1px solid #dcfce7;
+            color: var(--success-text);
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .invalid-feedback {
+            font-weight: 500;
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header-nav">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+            <span class="brand-logo">SmartHealth</span>
+            <a th:href="@{/logout}"
+               class="btn btn-link p-0"
+               style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem; text-decoration: none;">
+                Đăng Xuất
+            </a>
+        </div>
+    </div>
+</header>
+
+<main class="container profile-container">
+
+    <div th:if="${param.success}"
+         class="alert alert-success alert-dismissible fade show alert-custom"
+         role="alert">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <span>Cập nhật thông tin hồ sơ thành công.</span>
+            <button type="button"
+                    class="close"
+                    data-dismiss="alert"
+                    aria-label="Close"
+                    style="color: var(--success-text); opacity: 0.7;">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="profile-card">
+        <div class="card-header-inner">
+            <h1 class="page-heading">Tài Khoản Cá Nhân</h1>
+            <p class="page-subheading">
+                Quản lý thông tin hồ sơ và tùy chọn cá nhân của bạn.
+            </p>
+        </div>
+
+        <div class="card-body-inner">
+            <form th:action="@{/profile}"
+                  th:object="${profileDTO}"
+                  method="post">
+
+                <div class="form-group mb-4">
+                    <label>Họ Và Tên</label>
+                    <input type="text"
+                           class="form-control"
+                           th:field="*{fullName}"
+                           placeholder="Nhập họ tên"
+                           th:classappend="${#fields.hasErrors('fullName')} ? ' is-invalid' : ''"/>
+                    <div th:if="${#fields.hasErrors('fullName')}"
+                         class="invalid-feedback"
+                         th:text="${#fields.errors('fullName')[0]}"></div>
+                </div>
+
+                <div class="form-row mb-4">
+                    <div class="form-group col-md-6">
+                        <label>Số Điện Thoại</label>
+                        <input type="text"
+                               class="form-control"
+                               th:field="*{phone}"
+                               placeholder="Chưa cập nhật"
+                               th:classappend="${#fields.hasErrors('phone')} ? ' is-invalid' : ''"/>
+                        <div th:if="${#fields.hasErrors('phone')}"
+                             class="invalid-feedback"
+                             th:text="${#fields.errors('phone')[0]}"></div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Ngày Sinh</label>
+                        <input type="date"
+                               class="form-control"
+                               th:field="*{dateOfBirth}"
+                               th:max="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}"
+                               th:classappend="${#fields.hasErrors('dateOfBirth')} ? ' is-invalid' : ''"/>
+                        <div th:if="${#fields.hasErrors('dateOfBirth')}"
+                             class="invalid-feedback"
+                             th:text="${#fields.errors('dateOfBirth')[0]}"></div>
+                    </div>
+                </div>
+
+                <div class="form-row mb-5">
+                    <div class="form-group col-md-6">
+                        <label>Giới Tính</label>
+                        <select class="form-control"
+                                th:field="*{gender}"
+                                th:classappend="${#fields.hasErrors('gender')} ? ' is-invalid' : ''">
+                            <option value="">Chọn giới tính</option>
+                            <option value="MALE">Nam</option>
+                            <option value="FEMALE">Nữ</option>
+                            <option value="OTHER">Khác</option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('gender')}"
+                             class="invalid-feedback"
+                             th:text="${#fields.errors('gender')[0]}"></div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Địa Chỉ</label>
+                        <input type="text"
+                               class="form-control"
+                               th:field="*{address}"
+                               placeholder="Chưa cập nhật"
+                               th:classappend="${#fields.hasErrors('address')} ? ' is-invalid' : ''"/>
+                        <div th:if="${#fields.hasErrors('address')}"
+                             class="invalid-feedback"
+                             th:text="${#fields.errors('address')[0]}"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end pt-3"
+                     style="border-top: 1px solid var(--border-color); gap: 20px">
+                    <a th:href="@{/home}" class="btn-cancel">Quay Lại</a>
+                    <button type="submit" class="btn-save">Cập Nhật Hồ Sơ</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

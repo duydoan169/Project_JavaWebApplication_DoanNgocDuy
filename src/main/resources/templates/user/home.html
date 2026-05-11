@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Trang Chủ — SmartHealth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary:       #4f46e5;
+      --primary-dark:  #4338ca;
+      --primary-light: #eef2ff;
+      --primary-mid:   #c7d2fe;
+      --text:          #1e1b4b;
+      --muted:         #6b7280;
+      --border:        #e5e7eb;
+      --bg:            #f5f5f9;
+      --white:         #ffffff;
+      --success:       #059669;
+      --danger:        #dc2626;
+      --warn:          #d97706;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── TOP BAR ─── */
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 3rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--primary);
+    }
+
+    .topbar-brand i {
+      font-size: 1.2rem;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .btn-ghost {
+      background: none;
+      border: none;
+      padding: .45rem .85rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      transition: background .15s, color .15s;
+    }
+    .btn-ghost:hover { background: var(--bg); color: var(--text); }
+
+    .btn-logout {
+      background: none;
+      border: 1.5px solid var(--border);
+      padding: .4rem .85rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); background: #fef2f2; }
+
+    .avatar-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      border: 2px solid var(--primary-mid);
+      color: var(--primary);
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .15s;
+    }
+    .avatar-btn:hover { border-color: var(--primary); }
+
+    /* ─── MAIN LAYOUT ─── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    /* ─── HERO GREETING ─── */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #6d28d9 100%);
+      border-radius: 16px;
+      padding: 2.2rem 2.5rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,.06);
+      border-radius: 50%;
+      top: -100px; right: -60px;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,.05);
+      border-radius: 50%;
+      bottom: -60px; right: 180px;
+    }
+
+    .hero-text h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      margin-bottom: .3rem;
+    }
+    .hero-text p {
+      font-size: .9rem;
+      opacity: .8;
+    }
+
+    .hero-icon {
+      font-size: 3.5rem;
+      opacity: .25;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    /* ─── SERVICE CARDS (main nav) ─── */
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .service-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      cursor: pointer;
+      transition: border-color .2s, box-shadow .2s, transform .15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 20px rgba(79,70,229,.1);
+      transform: translateY(-2px);
+    }
+
+    .service-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .service-card h3 {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .service-card p {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .service-arrow {
+      margin-top: auto;
+      font-size: .75rem;
+      color: var(--primary);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .service-card:hover .service-arrow { opacity: 1; }
+
+    /* icon bg variants */
+    .ic-indigo  { background: var(--primary-light); color: var(--primary); }
+    .ic-green   { background: #ecfdf5;              color: var(--success); }
+    .ic-amber   { background: #fffbeb;              color: var(--warn);    }
+    .ic-rose    { background: #fff1f2;              color: #e11d48;        }
+
+    /* ─── BOTTOM ROW ─── */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .info-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .info-card h4 {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .info-card h4 i { color: var(--primary); }
+
+    /* notice list */
+    .notice-list { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+    .notice-list li {
+      font-size: .85rem;
+      color: var(--muted);
+      padding-left: 1rem;
+      position: relative;
+      line-height: 1.5;
+    }
+    .notice-list li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 7px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--primary-mid);
+    }
+
+    /* steps */
+    .steps { display: flex; flex-direction: column; gap: .9rem; }
+    .step {
+      display: flex;
+      gap: .85rem;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: .75rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-body strong {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: .15rem;
+    }
+    .step-body span {
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 700px) {
+      .bottom-row { grid-template-columns: 1fr; }
+      .hero { flex-direction: column; gap: 1rem; text-align: center; }
+      .hero-icon { font-size: 2.5rem; }
+      .topbar { padding: 0 1rem; }
+      .main { padding: 1.25rem 1rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <i class="fa-solid fa-heart-pulse"></i>
+    SmartHealth
+  </div>
+  <div class="topbar-right">
+    <a href="/profile">
+      <button class="btn-ghost">
+        <i class="fa-regular fa-user"></i>
+        Hồ sơ cá nhân
+      </button>
+    </a>
+    <a href="/logout">
+      <button class="btn-logout">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        Đăng xuất
+      </button>
+    </a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-text">
+      <h2>Xin chào, <span th:text="${currentUser.fullName.substring(currentUser.fullName.lastIndexOf(' ') + 1)}"></span></h2>
+      <p>Chào mừng bạn đến với nền tảng y tế số SmartHealth</p>
+    </div>
+    <div class="hero-icon">
+      <i class="fa-solid fa-stethoscope"></i>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="section-label">Dịch vụ của bạn</div>
+  <div class="services">
+
+    <a href="/appointments/book">
+      <div class="service-card">
+        <div class="service-icon ic-indigo">
+          <i class="fa-solid fa-calendar-plus"></i>
+        </div>
+        <h3>Đặt lịch khám</h3>
+        <p>Chọn chuyên khoa, bác sĩ và khung giờ phù hợp</p>
+        <div class="service-arrow">Đặt ngay <i class="fa-solid fa-arrow-right"></i></div>
+      </div>
+    </a>
+
+    <a href="/appointments/list">
+      <div class="service-card">
+        <div class="service-icon ic-green">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <h3>Lịch hẹn của tôi</h3>
+        <p>Xem và quản lý các lịch hẹn sắp tới</p>
+        <div class="service-arrow">Xem lịch <i class="fa-solid fa-arrow-right"></i></div>
+      </div>
+    </a>
+
+    <a href="/medical-records">
+      <div class="service-card">
+        <div class="service-icon ic-amber">
+          <i class="fa-solid fa-file-medical"></i>
+        </div>
+        <h3>Hồ sơ bệnh án</h3>
+        <p>Tra cứu lịch sử khám và đơn thuốc đã kê</p>
+        <div class="service-arrow">Xem hồ sơ <i class="fa-solid fa-arrow-right"></i></div>
+      </div>
+    </a>
+
+    <a href="/profile">
+      <div class="service-card">
+        <div class="service-icon ic-rose">
+          <i class="fa-solid fa-user-pen"></i>
+        </div>
+        <h3>Thông tin cá nhân</h3>
+        <p>Cập nhật hồ sơ và thông tin liên hệ</p>
+        <div class="service-arrow">Chỉnh sửa <i class="fa-solid fa-arrow-right"></i></div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-row">
+
+    <!-- Lưu ý -->
+    <div class="info-card">
+      <h4><i class="fa-solid fa-circle-info"></i> Lưu ý quan trọng</h4>
+      <ul class="notice-list">
+        <li>Bệnh nhân có thể hủy lịch hẹn trước ít nhất <strong>24 giờ</strong> so với giờ khám.</li>
+        <li>Vui lòng đến đúng giờ. Nếu trễ quá 15 phút, lịch hẹn có thể bị hủy.</li>
+        <li>Mang theo giấy tờ tùy thân khi đến khám.</li>
+        <li>Liên hệ bộ phận hỗ trợ nếu cần thay đổi thông tin lịch hẹn.</li>
+      </ul>
+    </div>
+
+    <!-- Quy trình -->
+    <div class="info-card">
+      <h4><i class="fa-solid fa-list-check"></i> Quy trình đặt khám</h4>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Chọn chuyên khoa</strong>
+            <span>Tìm chuyên khoa phù hợp với tình trạng sức khỏe</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Chọn bác sĩ & khung giờ</strong>
+            <span>Xem lịch trống và chọn thời gian thuận tiện</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Xác nhận & đến khám</strong>
+            <span>Nhận xác nhận và đến đúng giờ đã hẹn</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

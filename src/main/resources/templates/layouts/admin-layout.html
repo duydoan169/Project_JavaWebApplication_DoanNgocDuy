@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>SmartHealth Admin</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --sidebar-text: #64748b;
+            --sidebar-active-bg: #f1f5f9;
+            --sidebar-active-text: #0f172a;
+            --accent-color: #4f46e5;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-body);
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #1e293b;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 0;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 0 32px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--sidebar-active-text);
+            letter-spacing: -0.02em;
+            margin-bottom: 48px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-section {
+            padding: 0 32px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 16px;
+            letter-spacing: 0.1em;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 14px 32px;
+            color: var(--sidebar-text);
+            font-weight: 500;
+            font-size: 0.925rem;
+            text-decoration: none !important;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            color: var(--sidebar-active-text);
+            background-color: var(--sidebar-active-bg);
+        }
+
+        .sidebar-link.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+            border-left-color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 20px 32px;
+        }
+
+        .btn-signout {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: #ef4444;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: block;
+            text-align: center;
+            text-decoration: none !important;
+        }
+
+        .btn-signout:hover {
+            background-color: #fef2f2;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 48px 60px;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .page-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .content-label {
+            font-size: 0.875rem;
+            color: var(--sidebar-text);
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">SmartHealth</div>
+
+        <div class="sidebar-nav">
+            <div class="sidebar-section">TỔNG QUAN</div>
+            <a th:href="@{/admin/home}"
+               th:classappend="${activePage == 'home'} ? ' active'"
+               class="sidebar-link">Trang Tổng Quan</a>
+
+            <div class="sidebar-section" style="margin-top: 32px;">TÀI NGUYÊN</div>
+            <a th:href="@{/admin/medicines}"
+               th:classappend="${activePage == 'medicines'} ? ' active'"
+               class="sidebar-link">Quản Lý Thuốc</a>
+
+            <a th:href="@{/}"
+               th:classappend="${activePage == 'testTypes'} ? ' active'"
+               class="sidebar-link">Loại Xét Nghiệm</a>
+
+            <a th:href="@{/}"
+               th:classappend="${activePage == 'specialties'} ? ' active'"
+               class="sidebar-link">Chuyên Môn</a>
+
+            <a th:href="@{/admin/prescriptions}"
+               th:classappend="${activePage == 'prescriptions'} ? ' active'"
+               class="sidebar-link">Phê Duyệt Đơn Thuốc</a>
+        </div>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-signout">Đăng xuất</a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div layout:fragment="content"></div>
+    </main>
+
+</div>
+
+</body>
+</html>

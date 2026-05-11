@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Đặt Lịch Khám — Chọn Bác Sĩ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4f46e5; --primary-dark: #4338ca;
+      --primary-light: #eef2ff; --primary-mid: #c7d2fe;
+      --text: #1e1b4b; --muted: #6b7280;
+      --border: #e5e7eb; --bg: #f5f5f9; --white: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+
+    .topbar {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 0 2rem; height: 60px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.15rem; color: var(--primary); }
+    .btn-ghost {
+      background: none; border: none; padding: .45rem .85rem; border-radius: 8px;
+      font-family: inherit; font-size: .88rem; font-weight: 500; color: var(--muted);
+      cursor: pointer; display: flex; align-items: center; gap: .4rem; transition: background .15s, color .15s;
+    }
+    .btn-ghost:hover { background: var(--bg); color: var(--text); }
+
+    .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+    .breadcrumb {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .82rem; color: var(--muted); margin-bottom: 1.5rem;
+    }
+    .breadcrumb span { color: var(--primary); font-weight: 600; }
+
+    .steps-bar { display: flex; align-items: center; margin-bottom: 2rem; }
+    .step-item { display: flex; align-items: center; gap: .5rem; font-size: .82rem; font-weight: 600; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; }
+    .step-item.done .step-num { background: #d1fae5; color: #059669; }
+    .step-item.done .step-label { color: var(--muted); }
+    .step-item.active .step-num { background: var(--primary); color: #fff; }
+    .step-item.active .step-label { color: var(--primary); }
+    .step-item.inactive .step-num { background: var(--border); color: var(--muted); }
+    .step-item.inactive .step-label { color: var(--muted); }
+    .step-line { flex: 1; height: 2px; background: var(--border); margin: 0 .75rem; min-width: 40px; }
+
+    h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: .4rem; }
+    .sub { font-size: .88rem; color: var(--muted); margin-bottom: 1.75rem; }
+
+    .doctor-list { display: flex; flex-direction: column; gap: .85rem; }
+    .doctor-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; gap: 1.25rem;
+      cursor: pointer; transition: border-color .2s, box-shadow .2s;
+    }
+    .doctor-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(79,70,229,.1); }
+    .doctor-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--primary-light); color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .doctor-info { flex: 1; }
+    .doctor-info h3 { font-size: .95rem; font-weight: 600; margin-bottom: .2rem; }
+    .doctor-info p { font-size: .82rem; color: var(--muted); }
+    .doctor-arrow { color: var(--primary); font-size: .85rem; opacity: 0; transition: opacity .2s; }
+    .doctor-card:hover .doctor-arrow { opacity: 1; }
+
+    .empty { text-align: center; color: var(--muted); padding: 3rem 0; font-size: .9rem; }
+  </style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-brand"><i class="fa-solid fa-heart-pulse"></i> SmartHealth</div>
+</div>
+
+<div class="main">
+  <div class="breadcrumb">
+    <a href="/home">Trang chủ</a>
+    <i class="fa-solid fa-chevron-right" style="font-size:.65rem"></i>
+    <a href="/appointments/book">Đặt lịch</a>
+    <i class="fa-solid fa-chevron-right" style="font-size:.65rem"></i>
+    <span th:text="${specialty.name}">Chuyên khoa</span>
+  </div>
+
+  <div class="steps-bar">
+    <div class="step-item done">
+      <div class="step-num"><i class="fa-solid fa-check" style="font-size:.65rem"></i></div>
+      <div class="step-label">Chuyên khoa</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item active">
+      <div class="step-num">2</div>
+      <div class="step-label">Bác sĩ</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item inactive">
+      <div class="step-num">3</div>
+      <div class="step-label">Ngày & Giờ</div>
+    </div>
+  </div>
+
+  <div style="display: flex; justify-content: space-between">
+    <div>
+      <h2>Chọn bác sĩ</h2>
+      <p class="sub">Danh sách bác sĩ thuộc chuyên khoa <strong th:text="${specialty.name}"></strong></p>
+    </div>
+    <a href="/appointments/book"><button class="btn-ghost"><i class="fa-solid fa-arrow-left"></i> Quay lại</button></a>
+  </div>
+
+  <div class="doctor-list" th:if="${!doctors.isEmpty()}">
+    <a th:each="doctor : ${doctors}"
+       th:href="@{/appointments/book/slots(doctorId=${doctor.id})}">
+      <div class="doctor-card">
+        <div class="doctor-avatar"><i class="fa-solid fa-user-doctor"></i></div>
+        <div class="doctor-info">
+          <h3 th:text="'BS. ' + ${doctor.user.fullName}">Tên bác sĩ</h3>
+          <p th:text="${doctor.specialty.name}">Chuyên khoa</p>
+        </div>
+        <div class="doctor-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </div>
+    </a>
+  </div>
+
+  <div class="empty" th:if="${doctors.isEmpty()}">
+    <i class="fa-solid fa-user-slash" style="font-size:2rem; margin-bottom:.75rem; display:block"></i>
+    Chưa có bác sĩ nào trong chuyên khoa này
+  </div>
+</div>
+</body>
+</html>

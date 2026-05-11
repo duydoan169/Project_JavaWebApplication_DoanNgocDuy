@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin-layout}">
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- HEADER SECTION -->
+    <div class="d-flex align-items-center justify-content-between mb-5">
+
+        <div>
+            <h1 class="page-title mb-1"
+                style="font-size: 1.75rem; font-weight: 700; color: #0f172a; letter-spacing: -0.02em;">
+                Quản Lý Kho Thuốc
+            </h1>
+
+            <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 0;">
+                Quản lý tập trung tồn kho và giá thuốc trong hệ thống.
+            </p>
+        </div>
+
+        <a th:href="@{/admin/medicines/add}"
+           class="btn btn-primary"
+           style="background-color: #4f46e5; border: none; font-weight: 600; padding: 10px 20px; border-radius: 8px;">
+            Thêm Thuốc Mới
+        </a>
+
+    </div>
+
+    <!-- ERROR NOTIFICATION -->
+    <div th:if="${error}"
+         class="alert"
+         role="alert"
+         style="background-color: #fef2f2; border: 1px solid #fee2e2; color: #b91c1c; border-radius: 8px; font-weight: 500; font-size: 0.9rem; padding: 16px;">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <span th:text="${error}"></span>
+
+            <button type="button"
+                    class="close"
+                    data-dismiss="alert"
+                    style="color: #b91c1c; outline: none;">
+                <span>&times;</span>
+            </button>
+
+        </div>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="page-card"
+         style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden;">
+
+        <div class="table-responsive">
+
+            <table class="table mb-0" style="vertical-align: middle;">
+
+                <thead style="background-color: #f8fafc;">
+
+                <tr>
+
+                    <th style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        ID
+                    </th>
+
+                    <th style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        Tên Thuốc
+                    </th>
+
+                    <th class="text-center"
+                        style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        Đơn Vị
+                    </th>
+
+                    <th class="text-center"
+                        style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        Tồn Kho
+                    </th>
+
+                    <th class="text-center"
+                        style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        Đơn Giá
+                    </th>
+
+                    <th class="text-center"
+                        style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        Thao Tác
+                    </th>
+
+                </tr>
+
+                </thead>
+
+                <tbody style="font-size: 0.925rem; color: #334155;">
+
+                <!-- EMPTY STATE -->
+                <tr th:if="${#lists.isEmpty(medicines)}">
+
+                    <td colspan="6"
+                        class="text-center py-5"
+                        style="color: #94a3b8; font-style: italic;">
+
+                        Chưa có dữ liệu thuốc trong hệ thống.
+
+                    </td>
+
+                </tr>
+
+                <!-- DATA ROWS -->
+                <tr th:each="medicine : ${medicines}"
+                    style="transition: background-color 0.2s;">
+
+                    <td style="padding: 20px 24px; color: #94a3b8; font-family: monospace;"
+                        th:text="${medicine.id}">
+                    </td>
+
+                    <td style="padding: 20px 24px; font-weight: 600; color: #0f172a;"
+                        th:text="${medicine.name}">
+                    </td>
+
+                    <td class="text-center"
+                        style="padding: 20px 24px; color: #64748b;"
+                        th:text="${medicine.unit}">
+                    </td>
+
+                    <td class="text-center" style="padding: 20px 24px;">
+
+                        <span th:text="${medicine.stockQuantity}"
+                              th:style="${medicine.stockQuantity < 50}
+                              ? 'background-color: #fef2f2; color: #b91c1c; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.85rem;'
+                              : 'background-color: #f0fdf4; color: #166534; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.85rem;'">
+                        </span>
+
+                    </td>
+
+                    <td class="text-center"
+                        style="padding: 20px 24px; font-weight: 500;"
+                        th:text="${#numbers.formatDecimal(medicine.pricePerUnit, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">
+                    </td>
+
+                    <td class="text-center" style="padding: 20px 24px;">
+
+                        <div class="d-flex justify-content-center">
+
+                            <a th:href="@{/admin/medicines/edit/{id}(id=${medicine.id})}"
+                               class="btn-action-link"
+                               style="color: #4f46e5; font-weight: 600; text-decoration: none; margin-right: 20px; font-size: 0.85rem;">
+
+                                Sửa
+
+                            </a>
+
+                            <form th:action="@{/admin/medicines/delete/{id}(id=${medicine.id})}"
+                                  method="post"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Xác nhận xóa thuốc này khỏi kho?')">
+
+                                <button type="submit"
+                                        style="background: none; border: none; color: #ef4444; font-weight: 600; font-size: 0.85rem; cursor: pointer; padding: 0;">
+
+                                    Xóa
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

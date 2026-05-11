@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/admin-layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <title>Chi Tiết Thuốc — SmartHealth</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- HEADER & NAVIGATION --- */
+        .header-bar {
+            background-color: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            margin-bottom: 48px;
+        }
+
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .breadcrumb-nav {
+            margin-bottom: 24px;
+        }
+
+        .breadcrumb-link {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-decoration: none !important;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-link:hover {
+            color: var(--accent);
+        }
+
+        /* --- FORM CARD --- */
+        .form-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            padding: 32px 32px 0 32px;
+        }
+
+        .card-body-custom {
+            padding: 32px;
+        }
+
+        .form-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+        }
+
+        /* --- INPUTS --- */
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            height: 46px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            padding: 0 16px;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #cbd5e1;
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 24px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-secondary {
+            color: var(--text-muted);
+            border-color: var(--border-color);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            border-color: #cbd5e1;
+        }
+
+        .invalid-feedback {
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body layout:fragment="content">
+
+<main class="container">
+
+    <nav class="breadcrumb-nav">
+        <a th:href="@{/admin/medicines}" class="breadcrumb-link">
+            Quay lại danh sách thuốc
+        </a>
+    </nav>
+
+    <div class="form-card">
+
+        <div class="card-header-custom">
+
+            <h1 class="form-title"
+                th:text="${medicineDTO.id != null} ? 'Chỉnh sửa thuốc' : 'Thêm thuốc mới'">
+            </h1>
+
+            <p class="form-subtitle"
+               th:text="${medicineDTO.id != null}
+               ? 'Cập nhật thông tin tồn kho của thuốc này.'
+               : 'Thêm thuốc mới vào hệ thống quản lý trung tâm.'">
+            </p>
+
+        </div>
+
+        <div class="card-body-custom">
+
+            <form th:action="${medicineDTO.id != null}
+                  ? '/admin/medicines/edit/' + ${medicineDTO.id}
+                  : '/admin/medicines/add'"
+                  th:object="${medicineDTO}"
+                  method="post">
+
+                <div class="form-group mb-4">
+
+                    <label>Tên thuốc</label>
+
+                    <input type="text"
+                           class="form-control"
+                           th:field="*{name}"
+                           placeholder="VD: Amoxicillin 500mg"
+                           th:classappend="${#fields.hasErrors('name')} ? ' is-invalid'"/>
+
+                    <div th:if="${#fields.hasErrors('name')}"
+                         class="invalid-feedback"
+                         th:text="${#fields.errors('name')[0]}">
+                    </div>
+
+                </div>
+
+                <div class="form-group mb-4">
+
+                    <label>Đơn vị tính</label>
+
+                    <input type="text"
+                           class="form-control"
+                           th:field="*{unit}"
+                           placeholder="VD: Viên, Chai, Hộp"
+                           th:classappend="${#fields.hasErrors('unit')} ? ' is-invalid'"/>
+
+                    <div th:if="${#fields.hasErrors('unit')}"
+                         class="invalid-feedback"
+                         th:text="${#fields.errors('unit')[0]}">
+                    </div>
+
+                </div>
+
+                <div class="form-row mb-4">
+
+                    <div class="form-group col-md-6">
+
+                        <label>Số lượng tồn kho</label>
+
+                        <input type="number"
+                               class="form-control"
+                               th:field="*{stockQuantity}"
+                               placeholder="0"
+                               th:classappend="${#fields.hasErrors('stockQuantity')} ? ' is-invalid'"/>
+
+                        <div th:if="${#fields.hasErrors('stockQuantity')}"
+                             class="invalid-feedback"
+                             th:text="${#fields.errors('stockQuantity')[0]}">
+                        </div>
+
+                    </div>
+
+                    <div class="form-group col-md-6">
+
+                        <label>Đơn giá (VNĐ)</label>
+
+                        <input type="number"
+                               class="form-control"
+                               th:field="*{pricePerUnit}"
+                               placeholder="0"
+                               th:classappend="${#fields.hasErrors('pricePerUnit')} ? ' is-invalid'"/>
+
+                        <div th:if="${#fields.hasErrors('pricePerUnit')}"
+                             class="invalid-feedback"
+                             th:text="${#fields.errors('pricePerUnit')[0]}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr class="my-4" style="border-top: 1px solid var(--border-color);">
+
+                <div class="d-flex justify-content-end align-items-center">
+
+                    <a th:href="@{/admin/medicines}"
+                       class="btn btn-outline-secondary mr-3">
+                        Hủy thay đổi
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary"
+                            th:text="${medicineDTO.id != null}
+                            ? 'Cập nhật'
+                            : 'Xác nhận thêm'">
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

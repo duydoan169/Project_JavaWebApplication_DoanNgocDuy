@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Chi Tiết Hồ Sơ Khám — SmartHealth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5; --primary-dark: #4338ca; --primary-light: #eef2ff; --primary-mid: #c7d2fe;
+            --text: #1e1b4b; --muted: #6b7280; --border: #e5e7eb;
+            --bg: #f5f5f9; --white: #ffffff; --success: #059669; --danger: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        a { text-decoration: none; color: inherit; }
+
+        .topbar {
+            background: var(--white); border-bottom: 1px solid var(--border);
+            padding: 0 2rem; height: 60px; display: flex; align-items: center;
+            justify-content: space-between; position: sticky; top: 0; z-index: 100;
+        }
+        .topbar-brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.15rem; color: var(--primary); }
+        .btn-ghost {
+            background: none; border: none; padding: .45rem .85rem; border-radius: 8px;
+            font-family: inherit; font-size: .88rem; font-weight: 500; color: var(--muted);
+            cursor: pointer; display: flex; align-items: center; gap: .4rem; transition: background .15s, color .15s;
+        }
+        .btn-ghost:hover { background: var(--bg); color: var(--text); }
+
+        .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+        .section-card {
+            background: var(--white); border: 1.5px solid var(--border);
+            border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem;
+        }
+        .section-card h3 {
+            font-size: .88rem; font-weight: 700; color: var(--text);
+            margin-bottom: 1.1rem; display: flex; align-items: center; gap: .5rem;
+            padding-bottom: .75rem; border-bottom: 1px solid var(--border);
+        }
+        .section-card h3 i { color: var(--primary); }
+
+        .info-row {
+            display: flex; gap: .5rem;
+            font-size: .88rem; margin-bottom: .65rem; align-items: flex-start;
+        }
+        .info-row:last-child { margin-bottom: 0; }
+        .info-label { font-weight: 600; color: var(--text); min-width: 140px; flex-shrink: 0; }
+        .info-value { color: var(--muted); line-height: 1.5; }
+
+        .badge {
+            padding: .25rem .65rem; border-radius: 20px;
+            font-size: .75rem; font-weight: 700;
+        }
+        .badge-completed { background: #d1fae5; color: #065f46; }
+        .badge-cancelled  { background: #fee2e2; color: #991b1b; }
+
+        /* Doctor card */
+        .doctor-row {
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .doctor-avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--primary-light); color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+        .doctor-name { font-size: .95rem; font-weight: 600; margin-bottom: .15rem; }
+        .doctor-specialty { font-size: .82rem; color: var(--muted); }
+
+        /* Medicine table */
+        .med-table { width: 100%; border-collapse: collapse; margin-top: .5rem; }
+        .med-table th {
+            font-size: .78rem; font-weight: 700; color: var(--muted);
+            text-align: left; padding: .5rem .75rem;
+            border-bottom: 1.5px solid var(--border);
+        }
+        .med-table td {
+            font-size: .85rem; padding: .65rem .75rem;
+            border-bottom: 1px solid var(--border); color: var(--text);
+        }
+        .med-table tr:last-child td { border-bottom: none; }
+        .med-index {
+            width: 22px; height: 22px; border-radius: 50%;
+            background: var(--primary-light); color: var(--primary);
+            font-size: .7rem; font-weight: 700;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+
+        .cancelled-note {
+            background: #fff7ed; border: 1.5px solid #fed7aa;
+            border-radius: 10px; padding: 1rem 1.25rem;
+            font-size: .88rem; color: #92400e; margin-bottom: 1.25rem;
+            display: flex; align-items: flex-start; gap: .6rem;
+        }
+        .cancelled-note i { margin-top: .1rem; flex-shrink: 0; }
+
+        .empty-state { color: var(--muted); font-size: .85rem; font-style: italic; }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <div class="topbar-brand"><i class="fa-solid fa-heart-pulse"></i> SmartHealth</div>
+    <a href="/medical-records"><button class="btn-ghost"><i class="fa-solid fa-arrow-left"></i> Quay lại</button></a>
+</div>
+
+<div class="main">
+
+    <!-- Cancelled notice -->
+    <div class="cancelled-note" th:if="${appointment.status.name() == 'CANCELLED'}">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+            <strong>Lịch hẹn này đã bị hủy.</strong>
+            <span th:if="${appointment.cancelReason != null and !appointment.cancelReason.isBlank()}">
+                Lý do: <span th:text="${appointment.cancelReason}"></span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Appointment info -->
+    <div class="section-card">
+        <h3><i class="fa-solid fa-calendar-check"></i> Thông Tin Lịch Hẹn</h3>
+
+        <div class="info-row">
+            <span class="info-label">Ngày khám</span>
+            <span class="info-value" th:text="${#temporals.format(appointment.appointmentDate, 'dd/MM/yyyy')}"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Giờ khám</span>
+            <span class="info-value">
+                <span th:text="${#temporals.format(appointment.startTime, 'HH:mm')}"></span>
+                — <span th:text="${#temporals.format(appointment.endTime, 'HH:mm')}"></span>
+            </span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Trạng thái</span>
+            <span class="badge badge-completed" th:if="${appointment.status.name() == 'COMPLETED'}">Đã hoàn thành</span>
+            <span class="badge badge-cancelled"  th:if="${appointment.status.name() == 'CANCELLED'}">Đã hủy</span>
+        </div>
+        <div class="info-row" th:if="${appointment.reason != null and !appointment.reason.isBlank()}">
+            <span class="info-label">Lý do khám</span>
+            <span class="info-value" th:text="${appointment.reason}"></span>
+        </div>
+    </div>
+
+    <!-- Doctor info -->
+    <div class="section-card">
+        <h3><i class="fa-solid fa-user-doctor"></i> Thông Tin Bác Sĩ</h3>
+        <div class="doctor-row">
+            <div class="doctor-avatar"><i class="fa-solid fa-user-doctor"></i></div>
+            <div>
+                <div class="doctor-name" th:text="'BS. ' + ${appointment.doctor.user.fullName}"></div>
+                <div class="doctor-specialty" th:text="${appointment.doctor.specialty.name}"></div>
+                <div class="doctor-specialty" th:if="${appointment.doctor.user.phone != null}"
+                     th:text="${appointment.doctor.user.phone}"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical record — only for completed -->
+    <div th:if="${appointment.status.name() == 'COMPLETED'}">
+
+        <div class="section-card" th:if="${medicalRecord != null}">
+            <h3><i class="fa-solid fa-stethoscope"></i> Kết Quả Chẩn Đoán</h3>
+
+            <div class="info-row">
+                <span class="info-label">Triệu chứng</span>
+                <span class="info-value" th:text="${medicalRecord.symptoms}"></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Chẩn đoán</span>
+                <span class="info-value" th:text="${medicalRecord.diagnosis}"></span>
+            </div>
+            <div class="info-row" th:if="${medicalRecord.notes != null and !medicalRecord.notes.isBlank()}">
+                <span class="info-label">Ghi chú</span>
+                <span class="info-value" th:text="${medicalRecord.notes}"></span>
+            </div>
+        </div>
+
+        <!-- Prescription -->
+        <div class="section-card" th:if="${prescription != null}">
+            <h3><i class="fa-solid fa-prescription-bottle-medical"></i> Đơn Thuốc</h3>
+
+            <div class="info-row" th:if="${prescription.instructions != null and !prescription.instructions.isBlank()}">
+                <span class="info-label">Hướng dẫn</span>
+                <span class="info-value" th:text="${prescription.instructions}"></span>
+            </div>
+
+            <div th:if="${prescription.details != null and !prescription.details.isEmpty()}">
+                <table class="med-table">
+                    <thead>
+                    <tr>
+                        <th style="width:36px"></th>
+                        <th>Tên thuốc</th>
+                        <th>Đơn vị</th>
+                        <th>Số lượng</th>
+                        <th>Liều dùng</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="detail, iter : ${prescription.details}">
+                        <td><span class="med-index" th:text="${iter.index + 1}"></span></td>
+                        <td th:text="${detail.medicine.name}"></td>
+                        <td th:text="${detail.medicine.unit}"></td>
+                        <td th:text="${detail.quantity}"></td>
+                        <td th:text="${detail.dosage}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="empty-state" th:if="${prescription.details == null or prescription.details.isEmpty()}">
+                Không có thuốc nào được kê trong đơn này.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

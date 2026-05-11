@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Lịch Sử Khám Bệnh — SmartHealth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5; --primary-dark: #4338ca; --primary-light: #eef2ff; --primary-mid: #c7d2fe;
+            --text: #1e1b4b; --muted: #6b7280; --border: #e5e7eb;
+            --bg: #f5f5f9; --white: #ffffff; --success: #059669; --danger: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        a { text-decoration: none; color: inherit; }
+
+        .topbar {
+            background: var(--white); border-bottom: 1px solid var(--border);
+            padding: 0 2rem; height: 60px; display: flex; align-items: center;
+            justify-content: space-between; position: sticky; top: 0; z-index: 100;
+        }
+        .topbar-brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.15rem; color: var(--primary); }
+        .btn-ghost {
+            background: none; border: none; padding: .45rem .85rem; border-radius: 8px;
+            font-family: inherit; font-size: .88rem; font-weight: 500; color: var(--muted);
+            cursor: pointer; display: flex; align-items: center; gap: .4rem; transition: background .15s, color .15s;
+        }
+        .btn-ghost:hover { background: var(--bg); color: var(--text); }
+
+        .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+        .page-header { margin-bottom: 1.75rem; }
+        .page-header h2 { font-size: 1.35rem; font-weight: 700; }
+        .page-header p { font-size: .85rem; color: var(--muted); margin-top: .2rem; }
+
+        .record-card {
+            background: var(--white); border: 1.5px solid var(--border); border-radius: 12px;
+            padding: 1.25rem 1.5rem; margin-bottom: .85rem;
+            display: flex; align-items: center; gap: 1.25rem;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .record-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(79,70,229,.08); }
+
+        .date-block {
+            text-align: center; min-width: 54px;
+            border-radius: 10px; padding: .6rem .5rem; flex-shrink: 0;
+        }
+        .date-block.completed { background: #ecfdf5; }
+        .date-block.cancelled { background: #fee2e2; }
+        .date-block .day { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+        .date-block.completed .day { color: var(--success); }
+        .date-block.cancelled .day { color: var(--danger); }
+        .date-block .month { font-size: .7rem; font-weight: 600; text-transform: uppercase; }
+        .date-block.completed .month { color: var(--success); }
+        .date-block.cancelled .month { color: var(--danger); }
+
+        .record-info { flex: 1; }
+        .record-info h4 { font-size: .95rem; font-weight: 600; margin-bottom: .2rem; }
+        .record-info p { font-size: .82rem; color: var(--muted); margin-top: .15rem; }
+
+        .badge {
+            padding: .3rem .75rem; border-radius: 20px;
+            font-size: .75rem; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+        }
+        .badge-completed { background: #d1fae5; color: #065f46; }
+        .badge-cancelled  { background: #fee2e2; color: #991b1b; }
+
+        .btn-detail {
+            background: var(--primary-light); color: var(--primary); border: none;
+            border-radius: 8px; padding: .45rem .9rem; font-family: inherit;
+            font-size: .82rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+            display: flex; align-items: center; gap: .35rem; transition: background .15s; flex-shrink: 0;
+        }
+        .btn-detail:hover { background: var(--primary-mid); }
+
+        .empty { text-align: center; color: var(--muted); padding: 3rem 0; font-size: .9rem; }
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <div class="topbar-brand"><i class="fa-solid fa-heart-pulse"></i> SmartHealth</div>
+    <a href="/home"><button class="btn-ghost"><i class="fa-solid fa-arrow-left"></i> Trang chủ</button></a>
+</div>
+
+<div class="main">
+    <div class="page-header">
+        <h2>Lịch Sử Khám Bệnh</h2>
+        <p>Danh sách các lần khám đã hoàn thành và đã hủy</p>
+    </div>
+
+    <div th:if="${!appointments.isEmpty()}">
+        <div class="record-card" th:each="appt : ${appointments}">
+            <div th:class="'date-block ' + ${appt.status.name().toLowerCase()}">
+                <div class="day" th:text="${#temporals.format(appt.appointmentDate, 'dd')}"></div>
+                <div class="month" th:text="${#temporals.format(appt.appointmentDate, 'MMM')}"></div>
+            </div>
+            <div class="record-info">
+                <h4 th:text="'BS. ' + ${appt.doctor.user.fullName}">Tên bác sĩ</h4>
+                <p th:text="${appt.doctor.specialty.name}">Chuyên khoa</p>
+                <p>
+                    <i class="fa-regular fa-clock"></i>
+                    <span th:text="${#temporals.format(appt.startTime, 'HH:mm')}"></span>
+                    — <span th:text="${#temporals.format(appt.endTime, 'HH:mm')}"></span>
+                </p>
+            </div>
+            <span class="badge badge-completed" th:if="${appt.status.name() == 'COMPLETED'}">Đã hoàn thành</span>
+            <span class="badge badge-cancelled"  th:if="${appt.status.name() == 'CANCELLED'}">Đã hủy</span>
+            <a th:href="@{/medical-records/{id}(id=${appt.id})}">
+                <button class="btn-detail">
+                    Chi tiết <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <div class="empty" th:if="${appointments.isEmpty()}">
+        <i class="fa-solid fa-folder-open" style="font-size:2rem; margin-bottom:.75rem; display:block"></i>
+        Chưa có lịch sử khám bệnh nào.
+    </div>
+</div>
+</body>
+</html>

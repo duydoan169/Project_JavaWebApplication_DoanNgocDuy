@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Lịch Hẹn Của Tôi — SmartHealth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4f46e5; --primary-dark: #4338ca;
+      --primary-light: #eef2ff; --primary-mid: #c7d2fe;
+      --text: #1e1b4b; --muted: #6b7280;
+      --border: #e5e7eb; --bg: #f5f5f9; --white: #ffffff;
+      --success: #059669; --danger: #dc2626; --warn: #d97706;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+
+    .topbar {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 0 2rem; height: 60px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.15rem; color: var(--primary); }
+    .btn-ghost {
+      background: none; border: none; padding: .45rem .85rem; border-radius: 8px;
+      font-family: inherit; font-size: .88rem; font-weight: 500; color: var(--muted);
+      cursor: pointer; display: flex; align-items: center; gap: .4rem; transition: background .15s, color .15s;
+    }
+    .btn-ghost:hover { background: var(--bg); color: var(--text); }
+    .btn-primary {
+      background: var(--primary); color: #fff; border: none; border-radius: 8px;
+      padding: .45rem 1rem; font-family: inherit; font-size: .88rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: .4rem; transition: background .15s;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.75rem;
+    }
+    .page-header h2 { font-size: 1.35rem; font-weight: 700; }
+    .page-header p { font-size: .85rem; color: var(--muted); margin-top: .2rem; }
+
+    .alert-success {
+      background: #ecfdf5; border: 1.5px solid #6ee7b7; border-radius: 10px;
+      padding: .85rem 1.1rem; color: #065f46; font-size: .88rem; font-weight: 500;
+      display: flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem;
+    }
+    .alert-cancelled {
+      background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 10px;
+      padding: .85rem 1.1rem; color: #991b1b; font-size: .88rem; font-weight: 500;
+      display: flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem;
+    }
+
+    .appointment-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; margin-bottom: .85rem; overflow: hidden;
+    }
+
+    .card-main {
+      padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; gap: 1.25rem;
+    }
+
+    .appt-date-block {
+      text-align: center; min-width: 54px;
+      background: var(--primary-light); border-radius: 10px; padding: .6rem .5rem; flex-shrink: 0;
+    }
+    .appt-date-block .day { font-size: 1.4rem; font-weight: 700; color: var(--primary); line-height: 1; }
+    .appt-date-block .month { font-size: .7rem; color: var(--primary); font-weight: 600; text-transform: uppercase; }
+
+    .appt-info { flex: 1; }
+    .appt-info h4 { font-size: .95rem; font-weight: 600; margin-bottom: .25rem; }
+    .appt-info p { font-size: .82rem; color: var(--muted); }
+    .appt-info .time { font-weight: 600; color: var(--text); font-size: .85rem; margin-top: .2rem; }
+
+    .badge {
+      padding: .3rem .75rem; border-radius: 20px;
+      font-size: .75rem; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+    }
+    .badge-pending   { background: #fef3c7; color: #92400e; }
+    .badge-completed { background: #d1fae5; color: #065f46; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+    /* Cancel button */
+    .btn-cancel-appt {
+      background: none; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: .4rem .85rem; font-family: inherit; font-size: .82rem; font-weight: 500;
+      color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: .35rem;
+      transition: border-color .15s, color .15s, background .15s; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-cancel-appt:hover { border-color: var(--danger); color: var(--danger); background: #fef2f2; }
+
+    /* Cancel form panel — hidden by default, shown via checkbox hack */
+    .cancel-toggle { display: none; }
+    .cancel-panel {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      background: #fef2f2;
+    }
+    .cancel-toggle:checked ~ .cancel-panel { display: block; }
+    .cancel-toggle:checked ~ .card-main .btn-cancel-appt {
+      border-color: var(--danger); color: var(--danger); background: #fef2f2;
+    }
+
+    .cancel-panel label {
+      display: block; font-size: .82rem; font-weight: 600;
+      color: var(--text); margin-bottom: .35rem;
+    }
+    .cancel-panel textarea {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: .6rem .9rem; font-family: inherit; font-size: .85rem;
+      color: var(--text); resize: none; transition: border-color .2s;
+      margin-bottom: .75rem;
+    }
+    .cancel-panel textarea:focus { outline: none; border-color: var(--danger); }
+
+    .cancel-actions { display: flex; gap: .6rem; }
+    .btn-confirm-cancel {
+      background: var(--danger); color: #fff; border: none; border-radius: 8px;
+      padding: .5rem 1.1rem; font-family: inherit; font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: background .15s;
+    }
+    .btn-confirm-cancel:hover { background: #b91c1c; }
+    .btn-dismiss {
+      background: none; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: .5rem 1rem; font-family: inherit; font-size: .85rem; font-weight: 500;
+      color: var(--muted); cursor: pointer; transition: border-color .15s;
+    }
+    .btn-dismiss:hover { border-color: var(--text); color: var(--text); }
+
+    .empty { text-align: center; color: var(--muted); padding: 3rem 0; font-size: .9rem; }
+  </style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-brand"><i class="fa-solid fa-heart-pulse"></i> SmartHealth</div>
+  <a href="/home"><button class="btn-ghost"><i class="fa-solid fa-arrow-left"></i> Trang chủ</button></a>
+</div>
+
+<div class="main">
+
+  <div class="page-header">
+    <div>
+      <h2>Lịch hẹn của tôi</h2>
+      <p>Danh sách tất cả các lịch hẹn khám bệnh</p>
+    </div>
+    <a href="/appointments/book">
+      <button class="btn-primary">
+        <i class="fa-solid fa-calendar-plus"></i> Đặt lịch mới
+      </button>
+    </a>
+  </div>
+
+  <div class="alert-success" th:if="${param.success}">
+    <i class="fa-solid fa-circle-check"></i>
+    Đặt lịch khám thành công! Vui lòng đến đúng giờ đã hẹn.
+  </div>
+
+  <div class="alert-cancelled" th:if="${param.cancelled}">
+    <i class="fa-solid fa-circle-xmark"></i>
+
+    Lịch hẹn đã được hủy thành công.
+  </div>
+
+  <div th:if="${!appointments.isEmpty()}">
+    <div class="appointment-card" th:each="appt : ${appointments}">
+
+
+      <input class="cancel-toggle"
+             type="checkbox"
+             th:id="'toggle-' + ${appt.id}"/>
+
+      <div class="card-main">
+        <div class="appt-date-block">
+          <div class="day"   th:text="${#temporals.format(appt.appointmentDate, 'dd')}">01</div>
+          <div class="month" th:text="${#temporals.format(appt.appointmentDate, 'MMM')}">Th1</div>
+        </div>
+        <div class="appt-info">
+          <h4 th:text="'BS. ' + ${appt.doctor.user.fullName}">Tên bác sĩ</h4>
+          <p th:text="${appt.doctor.specialty.name}">Chuyên khoa</p>
+          <p class="time">
+            <i class="fa-regular fa-clock"></i>
+            <span th:text="${#temporals.format(appt.startTime, 'HH:mm')}"></span>
+            — <span th:text="${#temporals.format(appt.endTime, 'HH:mm')}"></span>
+          </p>
+          <p th:if="${appt.reason != null and !appt.reason.isBlank()}"
+             th:text="'Lý do: ' + ${appt.reason}"
+             style="margin-top:.2rem; font-style:italic"></p>
+        </div>
+
+        <span class="badge badge-pending"   th:if="${appt.status.name() == 'PENDING'}">Chờ khám</span>
+        <span class="badge badge-completed" th:if="${appt.status.name() == 'COMPLETED'}">Đã hoàn thành</span>
+        <span class="badge badge-cancelled" th:if="${appt.status.name() == 'CANCELLED'}">Đã hủy</span>
+
+        <label th:if="${appt.status.name() == 'PENDING' and appt.appointmentDate.atTime(appt.startTime).isAfter(#temporals.createNow().plusHours(24))}"
+               th:for="'toggle-' + ${appt.id}"
+               class="btn-cancel-appt">
+          <i class="fa-solid fa-xmark"></i> Hủy lịch
+        </label>
+      </div>
+
+
+      <div class="cancel-panel">
+        <form th:action="@{/appointments/cancel}" method="post">
+          <input type="hidden" name="appointmentId" th:value="${appt.id}"/>
+          <label>Lý do hủy <span style="color:var(--muted); font-weight:400">(tùy chọn)</span></label>
+          <textarea name="cancelReason" rows="2"
+                    placeholder="Nhập lý do hủy lịch nếu có..."></textarea>
+          <div class="cancel-actions">
+            <button type="submit" class="btn-confirm-cancel">
+              <i class="fa-solid fa-check"></i> Xác nhận hủy
+            </button>
+            <label th:for="'toggle-' + ${appt.id}" class="btn-dismiss" style="cursor:pointer">
+              Quay lại
+            </label>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="empty" th:if="${appointments.isEmpty()}">
+    <i class="fa-solid fa-calendar-xmark" style="font-size:2rem; margin-bottom:.75rem; display:block"></i>
+    Bạn chưa có lịch hẹn nào.
+    <a href="/appointments/book" style="color:var(--primary); font-weight:600">Đặt lịch ngay</a>
+  </div>
+
+</div>
+</body>
+</html>

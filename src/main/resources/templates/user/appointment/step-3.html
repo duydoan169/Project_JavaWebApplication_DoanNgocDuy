@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Đặt Lịch Khám — Chọn Giờ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4f46e5; --primary-dark: #4338ca;
+      --primary-light: #eef2ff; --primary-mid: #c7d2fe;
+      --text: #1e1b4b; --muted: #6b7280;
+      --border: #e5e7eb; --bg: #f5f5f9; --white: #ffffff;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+
+    .topbar {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 0 2rem; height: 60px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.15rem; color: var(--primary); }
+    .btn-ghost {
+      background: none; border: none; padding: .45rem .85rem; border-radius: 8px;
+      font-family: inherit; font-size: .88rem; font-weight: 500; color: var(--muted);
+      cursor: pointer; display: flex; align-items: center; gap: .4rem; transition: background .15s, color .15s;
+    }
+    .btn-ghost:hover { background: var(--bg); color: var(--text); }
+
+    .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+
+    .breadcrumb {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .82rem; color: var(--muted); margin-bottom: 1.5rem;
+    }
+    .breadcrumb span { color: var(--primary); font-weight: 600; }
+
+    .steps-bar { display: flex; align-items: center; margin-bottom: 2rem; }
+    .step-item { display: flex; align-items: center; gap: .5rem; font-size: .82rem; font-weight: 600; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; }
+    .step-item.done .step-num { background: #d1fae5; color: #059669; }
+    .step-item.done .step-label { color: var(--muted); }
+    .step-item.active .step-num { background: var(--primary); color: #fff; }
+    .step-item.active .step-label { color: var(--primary); }
+    .step-line { flex: 1; height: 2px; background: var(--border); margin: 0 .75rem; min-width: 40px; }
+
+    /* Doctor summary */
+    .doctor-summary {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 1.1rem 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .doctor-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--primary-light); color: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .doctor-summary h4 { font-size: .92rem; font-weight: 600; margin-bottom: .15rem; }
+    .doctor-summary p { font-size: .8rem; color: var(--muted); }
+
+    /* Date picker */
+    .date-row { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem; }
+    .date-row label { font-size: .85rem; font-weight: 600; color: var(--text); white-space: nowrap; }
+    .date-input {
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: .5rem .85rem; font-family: inherit; font-size: .9rem;
+      color: var(--text); transition: border-color .2s;
+    }
+    .date-input:focus { outline: none; border-color: var(--primary); }
+    .btn-date {
+      background: var(--primary); color: #fff; border: none;
+      border-radius: 8px; padding: .5rem 1rem;
+      font-family: inherit; font-size: .88rem; font-weight: 600;
+      cursor: pointer; transition: background .15s;
+    }
+    .btn-date:hover { background: var(--primary-dark); }
+
+    h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+
+    /* Slot grid */
+    .slot-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: .6rem; margin-bottom: 1.75rem;
+    }
+    .slot-label {
+      display: block; cursor: pointer;
+    }
+    .slot-label input[type="radio"] { display: none; }
+    .slot-box {
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: .55rem .5rem; text-align: center;
+      font-size: .85rem; font-weight: 500; color: var(--text);
+      background: var(--white); transition: border-color .15s, background .15s, color .15s;
+    }
+    .slot-label input[type="radio"]:checked + .slot-box {
+      background: var(--primary); border-color: var(--primary); color: #fff;
+    }
+    .slot-box:hover { border-color: var(--primary); color: var(--primary); }
+
+    .no-slots { color: var(--muted); font-size: .88rem; padding: 1rem 0; }
+
+    /* Form */
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; font-size: .82rem; font-weight: 600; color: var(--text); margin-bottom: .35rem; }
+    .form-control {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: .6rem .9rem; font-family: inherit; font-size: .9rem;
+      color: var(--text); transition: border-color .2s; resize: vertical;
+    }
+    .form-control:focus { outline: none; border-color: var(--primary); }
+    .text-danger { color: var(--danger); font-size: .82rem; margin-top: .3rem; display: block; }
+
+    .btn-submit {
+      width: 100%; background: var(--primary); color: #fff; border: none;
+      border-radius: 8px; padding: .75rem; font-family: inherit;
+      font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .15s;
+    }
+    .btn-submit:hover { background: var(--primary-dark); }
+  </style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-brand"><i class="fa-solid fa-heart-pulse"></i> SmartHealth</div>
+</div>
+
+<div class="main">
+  <div class="breadcrumb">
+    <a href="/home">Trang chủ</a>
+    <i class="fa-solid fa-chevron-right" style="font-size:.65rem"></i>
+    <a href="/appointments/book">Đặt lịch</a>
+    <i class="fa-solid fa-chevron-right" style="font-size:.65rem"></i>
+    <span>Chọn giờ khám</span>
+  </div>
+
+  <div class="steps-bar">
+    <div class="step-item done">
+      <div class="step-num"><i class="fa-solid fa-check" style="font-size:.65rem"></i></div>
+      <div class="step-label">Chuyên khoa</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item done">
+      <div class="step-num"><i class="fa-solid fa-check" style="font-size:.65rem"></i></div>
+      <div class="step-label">Bác sĩ</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item active">
+      <div class="step-num">3</div>
+      <div class="step-label">Ngày & Giờ</div>
+    </div>
+  </div>
+
+  <!-- Doctor summary -->
+  <div class="doctor-summary">
+    <div class="doctor-avatar"><i class="fa-solid fa-user-doctor"></i></div>
+    <div>
+      <h4 th:text="'BS. ' + ${doctor.user.fullName}">Tên bác sĩ</h4>
+      <p th:text="${doctor.specialty.name}">Chuyên khoa</p>
+    </div>
+  </div>
+
+  <!-- Date picker -->
+  <div style="display: flex; justify-content: space-between">
+    <form method="get" th:action="@{/appointments/book/slots}">
+      <input type="hidden" name="doctorId" th:value="${doctor.id}"/>
+      <div class="date-row">
+        <label for="date">Chọn ngày khám:</label>
+        <input type="date" id="date" name="date" class="date-input"
+               th:value="${selectedDate}"
+               th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"/>
+        <button type="submit" class="btn-date">Xem lịch</button>
+      </div>
+    </form>
+    <a th:href="@{/appointments/book/doctors(specialtyId=${doctor.specialty.id})}"><button class="btn-ghost"><i class="fa-solid fa-arrow-left"></i> Quay lại</button></a>
+  </div>
+
+  <!-- Slot picker + booking form -->
+  <form th:action="@{/appointments/book}" th:object="${appointmentDTO}" method="post">
+    <input type="hidden" name="doctorId" th:value="${doctor.id}"/>
+    <input type="hidden" name="appointmentDate" th:value="${selectedDate}"/>
+
+    <h3>Khung giờ còn trống — <span th:text="${#temporals.format(selectedDate, 'dd/MM/yyyy')}"></span></h3>
+
+    <div th:if="${!availableSlots.isEmpty()}">
+      <div class="slot-grid">
+        <label class="slot-label" th:each="slot : ${availableSlots}">
+          <input type="radio" name="startTime" th:value="${slot}"
+                 th:checked="${appointmentDTO.startTime == slot}"/>
+          <div class="slot-box" th:text="${#temporals.format(slot, 'HH:mm')}">08:00</div>
+        </label>
+      </div>
+      <span th:if="${#fields.hasErrors('startTime')}"
+            th:text="${#fields.errors('startTime')[0]}"
+            class="text-danger" style="margin-bottom:1rem; display:block"></span>
+    </div>
+
+    <p class="no-slots" th:if="${availableSlots.isEmpty()}">
+      <i class="fa-solid fa-calendar-xmark"></i>
+      Không còn khung giờ trống trong ngày này. Vui lòng chọn ngày khác.
+    </p>
+
+    <div class="form-group">
+      <label>Lý do khám <span style="color:var(--muted); font-weight:400">(tùy chọn)</span></label>
+      <textarea class="form-control" name="reason" th:field="*{reason}"
+                rows="3" placeholder="Mô tả triệu chứng hoặc lý do khám..."></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit"
+            th:disabled="${availableSlots.isEmpty()}">
+      <i class="fa-solid fa-calendar-check"></i> Xác nhận đặt lịch
+    </button>
+  </form>
+</div>
+</body>
+</html>

@@ -86,4 +86,8 @@ public class UserService {
         doctor.setSpecialty(specialty);
         doctorRepository.save(doctor);
     }
+
+    public Doctor findDoctorByUserId(Long userId){
+        return doctorRepository.findDoctorByUserId(userId);
+    }
 }

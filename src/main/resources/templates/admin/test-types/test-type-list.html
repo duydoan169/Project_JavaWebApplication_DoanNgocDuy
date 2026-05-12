@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin-layout}">
+
+<head>
+    <title>Loại Xét Nghiệm — SmartHealth Admin</title>
+    <style>
+        .page-sub { font-size: .9rem; color: #64748b; margin-bottom: 32px; }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+            <h1 class="page-title mb-1">Danh Mục Loại Xét Nghiệm</h1>
+            <p class="page-sub">Danh sách loại xét nghiệm trong hệ thống</p>
+        </div>
+    </div>
+
+    <div class="page-card">
+        <div class="table-responsive">
+            <table class="table mb-0" style="vertical-align: middle;">
+                <thead style="background-color: #f8fafc;">
+                <tr>
+                    <th style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        ID
+                    </th>
+                    <th style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        Tên Xét Nghiệm
+                    </th>
+                    <th style="padding: 16px 24px; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-top: none; border-bottom: 1px solid #e2e8f0;">
+                        Đơn Vị
+                    </th>
+                </tr>
+                </thead>
+                <tbody style="font-size: 0.925rem; color: #334155;">
+                <tr th:if="${#lists.isEmpty(testTypes)}">
+                    <td colspan="3" class="text-center py-5" style="color: #94a3b8; font-style: italic;">
+                        Chưa có dữ liệu loại xét nghiệm trong hệ thống.
+                    </td>
+                </tr>
+                <tr th:each="testType : ${testTypes}">
+                    <td style="padding: 20px 24px; color: #94a3b8; font-family: monospace;"
+                        th:text="${testType.id}"></td>
+                    <td style="padding: 20px 24px; font-weight: 600; color: #0f172a;"
+                        th:text="${testType.name}"></td>
+                    <td style="padding: 20px 24px; color: #64748b;"
+                        th:text="${testType.unit} ?: '—'"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

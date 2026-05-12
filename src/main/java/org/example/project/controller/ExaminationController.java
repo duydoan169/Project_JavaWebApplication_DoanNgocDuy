@@ -10,6 +10,7 @@ import org.example.project.model.Doctor;
 import org.example.project.model.User;
 import org.example.project.repository.DoctorRepository;
 import org.example.project.service.ExaminationService;
+import org.example.project.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,13 +22,13 @@ import org.springframework.web.bind.annotation.*;
 public class ExaminationController {
 
     private final ExaminationService examinationService;
-    private final DoctorRepository doctorRepository;
+    private final UserService userService;
 
     // Today's pending appointment list
     @GetMapping("/list")
     public String pendingList(HttpSession session, Model model) {
         User currentUser = (User) session.getAttribute("currentUser");
-        Doctor doctor = doctorRepository.findDoctorByUserId(currentUser.getId());
+        Doctor doctor = userService.findDoctorByUserId(currentUser.getId());
         model.addAttribute("appointments", examinationService.getPendingAppointments(doctor.getId()));
         return "doctor/examination-list";
     }

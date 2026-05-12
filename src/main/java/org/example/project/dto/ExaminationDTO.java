@@ -20,6 +20,7 @@ public class ExaminationDTO {
     private String diagnosis;
 
     private String notes;
+
     private String instructions;
 
     private List<PrescriptionDetailDTO> medicines = new ArrayList<>(List.of(

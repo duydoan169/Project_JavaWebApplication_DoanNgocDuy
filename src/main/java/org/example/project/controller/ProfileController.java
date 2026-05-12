@@ -10,6 +10,7 @@ import org.example.project.model.Doctor;
 import org.example.project.model.User;
 import org.example.project.repository.DoctorRepository;
 import org.example.project.repository.SpecialtyRepository;
+import org.example.project.service.AppointmentService;
 import org.example.project.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,8 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class ProfileController {
 
     private final UserService userService;
-    private final DoctorRepository doctorRepository;
-    private final SpecialtyRepository specialtyRepository;
+    private final AppointmentService appointmentService;
 
     @GetMapping("/profile")
     public String profilePage(HttpSession session, Model model) {
@@ -67,7 +67,7 @@ public class ProfileController {
     @GetMapping("/doctor/profile")
     public String doctorProfilePage(HttpSession session, Model model) {
         User currentUser = (User) session.getAttribute("currentUser");
-        Doctor doctor = doctorRepository.findDoctorByUserId(currentUser.getId());
+        Doctor doctor = userService.findDoctorByUserId(currentUser.getId());
 
         DoctorProfileDTO dto = new DoctorProfileDTO();
         dto.setFullName(currentUser.getFullName());
@@ -78,7 +78,7 @@ public class ProfileController {
         dto.setSpecialtyId(doctor.getSpecialty().getId());
 
         model.addAttribute("doctorProfileDTO", dto);
-        model.addAttribute("specialties", specialtyRepository.findAll());
+        model.addAttribute("specialties", appointmentService.getAllSpecialties());
         return "doctor/doctor-profile";
     }
 
@@ -88,7 +88,7 @@ public class ProfileController {
                                       HttpSession session,
                                       Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("specialties", specialtyRepository.findAll());
+            model.addAttribute("specialties", appointmentService.getAllSpecialties());
             return "doctor/doctor-profile";
         }
 
@@ -104,7 +104,7 @@ public class ProfileController {
             return "redirect:/doctor/profile?success";
         } catch (ServiceException e) {
             bindingResult.rejectValue(e.getField(), "", e.getMessage());
-            model.addAttribute("specialties", specialtyRepository.findAll());
+            model.addAttribute("specialties", appointmentService.getAllSpecialties());
             return "doctor/doctor-profile";
         }
     }

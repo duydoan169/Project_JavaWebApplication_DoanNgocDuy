@@ -23,12 +23,17 @@ public class AppointmentService {
     private final SpecialtyRepository specialtyRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final TestTypeRepository testTypeRepository;
 
     private static final LocalTime SLOT_START = LocalTime.of(8, 0);
     private static final LocalTime SLOT_END   = LocalTime.of(16, 30);
 
     public List<Specialty> getAllSpecialties() {
         return specialtyRepository.findAll();
+    }
+
+    public List<TestType> getAllTestTypes() {
+        return testTypeRepository.findAll();
     }
 
     public Specialty getSpecialtyById(Long id) {

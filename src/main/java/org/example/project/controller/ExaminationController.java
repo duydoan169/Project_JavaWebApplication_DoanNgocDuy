@@ -24,7 +24,6 @@ public class ExaminationController {
     private final ExaminationService examinationService;
     private final UserService userService;
 
-    // Today's pending appointment list
     @GetMapping("/list")
     public String pendingList(HttpSession session, Model model) {
         User currentUser = (User) session.getAttribute("currentUser");
@@ -33,7 +32,6 @@ public class ExaminationController {
         return "doctor/examination-list";
     }
 
-    // Examination form for one appointment
     @GetMapping("/{appointmentId}")
     public String examinationForm(@PathVariable Long appointmentId, Model model) {
         Appointment appointment = examinationService.getAppointmentById(appointmentId);
@@ -47,7 +45,6 @@ public class ExaminationController {
         return "doctor/examination-form";
     }
 
-    // Submit examination
     @PostMapping("/submit")
     public String submit(@Valid @ModelAttribute("examinationDTO") ExaminationDTO dto,
                          BindingResult bindingResult,

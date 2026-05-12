@@ -43,11 +43,9 @@ public class ExaminationService {
     public void examine(ExaminationDTO dto) {
         Appointment appointment = appointmentRepository.findById(dto.getAppointmentId()).orElse(null);
 
-        // 1. Update appointment status
         appointment.setStatus(AppointmentStatus.COMPLETED);
         appointmentRepository.save(appointment);
 
-        // 2. Save medical record
         MedicalRecord record = new MedicalRecord();
         record.setAppointment(appointment);
         record.setSymptoms(dto.getSymptoms());
@@ -56,7 +54,6 @@ public class ExaminationService {
         record.setCreatedAt(LocalDateTime.now());
         medicalRecordRepository.save(record);
 
-        // 3. Save prescription
         Prescription prescription = new Prescription();
         prescription.setAppointment(appointment);
         prescription.setInstructions(dto.getInstructions());

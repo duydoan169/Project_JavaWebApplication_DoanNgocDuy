@@ -7,6 +7,7 @@ import org.example.project.model.enums.Role;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class Interceptor implements HandlerInterceptor {
+
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
@@ -23,31 +24,36 @@ public class Interceptor implements HandlerInterceptor {
 
         Role role = currentUser.getRole();
 
-        if (path.startsWith("/admin") && role != Role.ADMIN) {
-            if (role == Role.DOCTOR){
-                response.sendRedirect("doctor/home");
-            }else {
-                response.sendRedirect("home");
+        if (path.startsWith("/admin")) {
+            if (role == Role.DOCTOR) {
+                response.sendRedirect("/doctor/home");
+                return false;
+            } else if (role == Role.PATIENT) {
+                response.sendRedirect("/home");
                 return false;
             }
         }
 
-        if (path.startsWith("/doctor") && role != Role.DOCTOR) {
-            if (role == Role.ADMIN){
-                response.sendRedirect("admin/medicines/list");
-            }else {
-                response.sendRedirect("home");
+        if (path.startsWith("/doctor")) {
+            if (role == Role.ADMIN) {
+                response.sendRedirect("/admin/home");
+                return false;
+            } else if (role == Role.PATIENT) {
+                response.sendRedirect("/home");
                 return false;
             }
         }
 
-        if(!path.startsWith("/admin") && !path.startsWith("/doctor")){
-            if (role == Role.ADMIN){
-                response.sendRedirect("admin/medicines/list");
-            }else if (role == Role.DOCTOR){
-                response.sendRedirect("doctor/home");
+        if (path.startsWith("/appointments") || path.startsWith("/medical-records") || path.equals("/profile") || path.equals("/home")) {
+            if (role == Role.ADMIN) {
+                response.sendRedirect("/admin/home");
+                return false;
+            } else if (role == Role.DOCTOR) {
+                response.sendRedirect("/doctor/home");
+                return false;
             }
         }
+
         return true;
     }
 }

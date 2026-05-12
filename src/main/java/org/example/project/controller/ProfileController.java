@@ -50,7 +50,6 @@ public class ProfileController {
         User currentUser = (User) session.getAttribute("currentUser");
         try {
             userService.updateProfile(currentUser.getId(), dto);
-            // update session with new info
             currentUser.setFullName(dto.getFullName());
             currentUser.setPhone(dto.getPhone());
             currentUser.setDateOfBirth(dto.getDateOfBirth());

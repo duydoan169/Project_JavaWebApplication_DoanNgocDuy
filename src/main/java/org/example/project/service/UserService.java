@@ -58,6 +58,12 @@ public class UserService {
         User user = userRepository.findUserById(userId);
         if (user == null) throw new ServiceException(null, "Người dùng không tồn tại");
 
+        User userPhoneCheck = userRepository.findUserByPhone(dto.getPhone());
+
+        if(userPhoneCheck != null && !userPhoneCheck.getPhone().equals(dto.getPhone())){
+            throw new ServiceException("phone", "Số điện thoại tồn tại");
+        }
+
         user.setFullName(dto.getFullName());
         user.setPhone(dto.getPhone());
         user.setDateOfBirth(dto.getDateOfBirth());
